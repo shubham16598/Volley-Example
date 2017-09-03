@@ -29,34 +29,38 @@ public class MainActivity extends AppCompatActivity {
 
         textView = (TextView)findViewById(R.id.textView);
         button = (Button)findViewById(R.id.button);
-
-        Cache cache = new DiskBasedCache(getCacheDir(),1024*1024);
+        //without singleton class method
+        /* (2.) Cache cache = new DiskBasedCache(getCacheDir(),1024*1024);
         Network network = new BasicNetwork(new HurlStack());
 
         final RequestQueue requestQueue = new RequestQueue(cache,network);
-        requestQueue.start();
+        requestQueue.start();*/
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //final RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
+                //(1.without caching) final RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
 
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, server_url,
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
                                 textView.setText(response);
-                                requestQueue.stop();
+                                //requestQueue.stop();
                             }
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         textView.setText("Error Occured");
-                        requestQueue.stop();
+                        error.printStackTrace();
+                        //requestQueue.stop();
                     }
                 });
 
-                requestQueue.add(stringRequest);
+                //requestQueue.add(stringRequest);
+
+                MySingleton.getInstance(getApplicationContext()).addToRequest(stringRequest);
+
             }
         });
     }
